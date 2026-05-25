@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Englisch Quiz A1+ – Kahoot-Stil</title>
+  <style>
+    :root{--bg1:#46178f;--bg2:#25076b;--card:#fff;--text:#1f2937;--red:#e21b3c;--blue:#1368ce;--yellow:#d89e00;--green:#26890c}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:white;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}.app{width:min(980px,100%)}.card{background:var(--card);color:var(--text);border-radius:28px;padding:28px;box-shadow:0 18px 50px rgba(0,0,0,.28);text-align:center}h1{font-size:clamp(2rem,5vw,4rem);margin:0 0 10px;color:#46178f}h2{font-size:clamp(1.6rem,4vw,3rem);margin:10px 0 24px}p{font-size:1.15rem;line-height:1.45}button{border:0;border-radius:16px;padding:16px 22px;font-size:1.1rem;font-weight:bold;cursor:pointer;transition:.15s transform,.15s filter;color:white}button:hover{transform:scale(1.02);filter:brightness(1.04)}.start{background:#26890c;margin-top:14px;font-size:1.25rem}.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px;color:white;font-weight:bold}.pill{background:rgba(255,255,255,.18);border-radius:999px;padding:10px 14px}.questionbox{background:white;color:var(--text);border-radius:22px;padding:24px;margin-bottom:20px;min-height:145px;display:flex;align-items:center;justify-content:center;flex-direction:column}.questionbox .small{color:#6b7280;font-size:1rem;margin-top:6px}.answers{display:grid;grid-template-columns:1fr 1fr;gap:14px}.answer{min-height:92px;text-align:left;display:flex;align-items:center;gap:14px;border-radius:18px;padding:18px;font-size:1.25rem}.answer span:first-child{font-size:1.55rem;width:32px;text-align:center}.red{background:var(--red)}.blue{background:var(--blue)}.yellow{background:var(--yellow)}.green{background:var(--green)}.feedback{margin-top:18px;font-size:1.25rem;font-weight:bold;min-height:34px}.correct{color:#26890c}.wrong{color:#e21b3c}.next{background:#46178f;margin-top:12px}.hidden{display:none}.progress{height:12px;background:rgba(255,255,255,.22);border-radius:99px;overflow:hidden;margin-bottom:16px}.bar{height:100%;background:white;width:0%;transition:.3s}.result{font-size:1.4rem}.review{text-align:left;max-height:380px;overflow:auto;margin-top:18px;border-top:1px solid #ddd;padding-top:14px}.review li{margin:10px 0;line-height:1.35}@media(max-width:700px){.answers{grid-template-columns:1fr}.card{padding:20px}.answer{min-height:76px;font-size:1.1rem}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section id="startScreen" class="card">
+      <h1>Englisch Quiz A1+</h1>
+      <p>25 Fragen im Kahoot-Stil. Wähle die richtige Antwort und sammle Punkte!</p>
+      <p><strong>Themen:</strong> Alltag, simple present, be, have got, can, there is/are, Uhrzeit und kurze Dialoge.</p>
+      <button class="start" onclick="startQuiz()">Quiz starten</button>
+    </section>
+    <section id="quizScreen" class="hidden">
+      <div class="topbar"><div class="pill" id="qCount">Frage 1/25</div><div class="pill" id="score">Punkte: 0</div></div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div class="questionbox"><h2 id="question">Question</h2><div class="small" id="hint"></div></div>
+      <div class="answers" id="answers"></div><div id="feedback" class="feedback"></div>
+      <button id="nextBtn" class="next hidden" onclick="nextQuestion()">Weiter</button>
+    </section>
+    <section id="endScreen" class="card hidden">
+      <h1>Ergebnis</h1><p class="result" id="finalScore"></p><p id="finalText"></p>
+      <button class="start" onclick="restartQuiz()">Nochmal spielen</button><ol class="review" id="review"></ol>
+    </section>
+  </main>
+<script>
+const questions = [
+{q:"Choose the correct sentence.", hint:"Wähle den richtigen Satz.", a:["She is my sister.","She are my sister.","She am my sister.","She be my sister."], c:0},
+{q:"I ___ a small dog.", hint:"have got / has got", a:["has got","have got","am got","is got"], c:1},
+{q:"What is the opposite of 'big'?", hint:"Gegenteil", a:["new","small","long","old"], c:1},
+{q:"He ___ football on Mondays.", hint:"Simple present", a:["play","plays","playing","is play"], c:1},
+{q:"What time is it? 7:30", hint:"Uhrzeit", a:["It is half past seven.","It is seven past half.","It is half to seven.","It is thirty to seven."], c:0},
+{q:"There ___ two books on the table.", hint:"there is / there are", a:["is","are","am","be"], c:1},
+{q:"Can you swim?", hint:"Passende Kurzantwort", a:["Yes, I can.","Yes, I do.","Yes, I am.","Yes, I have."], c:0},
+{q:"My mother's brother is my ___.", hint:"Family", a:["aunt","uncle","cousin","grandfather"], c:1},
+{q:"We ___ from Germany.", hint:"to be", a:["is","am","are","be"], c:2},
+{q:"Choose the correct question.", hint:"Simple present question", a:["Do you like pizza?","Does you like pizza?","Are you like pizza?","You like pizza?"], c:0},
+{q:"She ___ breakfast at 8 o'clock.", hint:"Daily routine", a:["have","has","is","can"], c:1},
+{q:"What is 'Apfel' in English?", hint:"Vocabulary", a:["pear","apple","orange","banana"], c:1},
+{q:"I go to school ___ bus.", hint:"Transport", a:["on","by","in","at"], c:1},
+{q:"The cat is ___ the chair.", hint:"Preposition: unter", a:["under","on","next","between"], c:0},
+{q:"Complete the dialogue: 'How are you?' – '___'", hint:"Small talk", a:["I'm fine, thanks.","I'm twelve years.","I'm Germany.","I'm a book."], c:0},
+{q:"Which word is a colour?", hint:"Colour", a:["green","table","school","morning"], c:0},
+{q:"He ___ like coffee.", hint:"Negative simple present", a:["don't","doesn't","isn't","haven't"], c:1},
+{q:"What is the plural of 'child'?", hint:"Plural", a:["childs","childes","children","childrens"], c:2},
+{q:"I usually get up ___ seven o'clock.", hint:"Time preposition", a:["in","on","at","by"], c:2},
+{q:"Choose the correct answer: 'Where do you live?'", hint:"Question and answer", a:["I live in Berlin.","I am live Berlin.","I living in Berlin.","I lives in Berlin."], c:0},
+{q:"This is my friend. ___ name is Tom.", hint:"Possessive adjective", a:["His","Her","My","Their"], c:0},
+{q:"What can you buy at a bakery?", hint:"Shops", a:["bread","shoes","medicine","stamps"], c:0},
+{q:"It's cold. I need a ___.", hint:"Clothes", a:["T-shirt","coat","shorts","cap only"], c:1},
+{q:"Choose the correct sentence.", hint:"Present continuous", a:["They are watching TV.","They is watching TV.","They watching TV.","They watch TV now."], c:0},
+{q:"What does 'often' mean?", hint:"Adverb of frequency", a:["nie","oft","morgen","langsam"], c:1}
+];
+let index=0, score=0, locked=false, userAnswers=[]; const symbols=["▲","◆","●","■"], colours=["red","blue","yellow","green"];
+function startQuiz(){document.getElementById('startScreen').classList.add('hidden');document.getElementById('quizScreen').classList.remove('hidden');showQuestion();}
+function showQuestion(){locked=false;const item=questions[index];document.getElementById('qCount').textContent=`Frage ${index+1}/${questions.length}`;document.getElementById('score').textContent=`Punkte: ${score}`;document.getElementById('bar').style.width=`${(index/questions.length)*100}%`;document.getElementById('question').textContent=item.q;document.getElementById('hint').textContent=item.hint;document.getElementById('feedback').textContent='';document.getElementById('feedback').className='feedback';document.getElementById('nextBtn').classList.add('hidden');const answers=document.getElementById('answers');answers.innerHTML='';item.a.forEach((text,i)=>{const btn=document.createElement('button');btn.className=`answer ${colours[i]}`;btn.innerHTML=`<span>${symbols[i]}</span><span>${text}</span>`;btn.onclick=()=>chooseAnswer(i);answers.appendChild(btn);});}
+function chooseAnswer(i){if(locked)return;locked=true;const item=questions[index];const correct=i===item.c;userAnswers.push({q:item.q,chosen:item.a[i],correct:item.a[item.c],ok:correct});if(correct)score+=100;const feedback=document.getElementById('feedback');feedback.textContent=correct?'✅ Richtig! +100 Punkte':`❌ Nicht ganz. Richtig ist: ${item.a[item.c]}`;feedback.classList.add(correct?'correct':'wrong');[...document.querySelectorAll('.answer')].forEach((b,idx)=>{b.disabled=true;if(idx===item.c)b.style.outline='6px solid #37d67a';else if(idx===i)b.style.opacity='.55';});document.getElementById('score').textContent=`Punkte: ${score}`;document.getElementById('nextBtn').classList.remove('hidden');}
+function nextQuestion(){index++; if(index>=questions.length)endQuiz();else showQuestion();}
+function endQuiz(){document.getElementById('quizScreen').classList.add('hidden');document.getElementById('endScreen').classList.remove('hidden');const correctCount=userAnswers.filter(x=>x.ok).length;document.getElementById('finalScore').textContent=`${correctCount} von ${questions.length} richtig – ${score} Punkte`;document.getElementById('finalText').textContent=correctCount>=20?'Super gemacht!':correctCount>=14?'Gut gemacht – weiter üben!':'Bleib dran – beim nächsten Mal wird es besser!';document.getElementById('review').innerHTML=userAnswers.map((x,n)=>`<li>${x.ok?'✅':'❌'} <strong>${n+1}. ${x.q}</strong><br>Deine Antwort: ${x.chosen}<br>Richtig: ${x.correct}</li>`).join('');}
+function restartQuiz(){index=0;score=0;locked=false;userAnswers=[];document.getElementById('endScreen').classList.add('hidden');document.getElementById('quizScreen').classList.remove('hidden');showQuestion();}
+</script>
+</body>
+</html>
